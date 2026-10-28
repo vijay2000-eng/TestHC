@@ -1,0 +1,727 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="CareNest helps home-care teams coordinate patients, caregivers, and schedules in one place.">
+  <title>CareNest — Home Care, Connected</title>
+  <style>
+    :root {
+      --site-primary: #176F66;
+      --site-on-primary: #FFFFFF;
+      --site-secondary: #EBC27B;
+      --site-on-secondary: #263A38;
+      --site-background: #F5F8F6;
+      --site-on-background: #203A37;
+      --site-font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --site-font-heading: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --site-heading-scale: 1;
+      --site-spacing-scale: 1;
+      --site-radius-scale: 1;
+      --site-decoration-opacity: 1;
+      --teal-dark: #103E3A;
+      --teal: #176F66;
+      --teal-soft: #E3F1ED;
+      --gold: #EBC27B;
+      --ink: #203A37;
+      --muted: #68807B;
+      --line: #DCE7E2;
+      --surface: #FFFFFF;
+      --surface-soft: #F5F8F6;
+      --green: #287D60;
+      --red: #B84E4E;
+      --orange: #B77A2C;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; font-family: var(--site-font-body); background: light-dark(#F5F8F6, #102421); color: light-dark(#203A37, #EAF4F0); }
+    button, input, select, textarea { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    #app-root {
+      min-height: 100vh;
+      width: 100%;
+      border-radius: 0;
+      background-color: var(--site-background);
+      background: light-dark(var(--site-background), #102421);
+      color: light-dark(var(--site-on-background), #EAF4F0);
+      overflow: hidden;
+    }
+    .container { width: min(1190px, calc(100% - 48px)); margin: 0 auto; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: var(--teal); font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+    .eyebrow-dot { width: 7px; height: 7px; display: inline-block; background: var(--gold); border-radius: 50%; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 850; color: var(--teal-dark); letter-spacing: -.04em; }
+    .brand-mark { width: 37px; height: 37px; display: grid; place-items: center; border-radius: 12px; color: white; background: var(--teal); box-shadow: 0 7px 18px rgba(23,111,102,.18); }
+    .brand-mark svg { width: 23px; height: 23px; }
+    .brand-name { font-size: 20px; }
+    .brand-name span { color: var(--teal); }
+    .btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 9px; padding: 0 19px; border: 1px solid transparent; border-radius: calc(13px * var(--site-radius-scale)); background: var(--teal); color: white; font-weight: 750; box-shadow: 0 7px 18px rgba(23,111,102,.13); transition: transform .16s ease, box-shadow .16s ease, background .16s ease; }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 23px rgba(23,111,102,.2); background: #105C54; }
+    .btn svg { width: 17px; height: 17px; }
+    .btn-gold { background: var(--gold); color: var(--teal-dark); box-shadow: none; }
+    .btn-gold:hover { background: #F1D093; box-shadow: none; }
+    .btn-outline { background: transparent; border-color: var(--line); box-shadow: none; color: var(--teal-dark); }
+    .btn-outline:hover { background: var(--surface-soft); box-shadow: none; }
+    .btn-sm { min-height: 36px; padding: 0 13px; border-radius: 10px; font-size: 12px; }
+    .icon-btn { width: 38px; height: 38px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 12px; display: grid; place-items: center; }
+    .icon-btn svg { width: 18px; height: 18px; }
+
+    /* Marketing site */
+    .site-header { height: 78px; display: flex; align-items: center; border-bottom: 1px solid rgba(220,231,226,.7); background: light-dark(rgba(255,255,255,.8), rgba(16,36,33,.85)); backdrop-filter: blur(14px); }
+    .nav-wrap { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .nav-links { display: flex; align-items: center; gap: 29px; color: light-dark(#536F69, #B0C5BE); font-size: 13px; font-weight: 650; }
+    .nav-links a:hover { color: var(--teal); }
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+    .nav-menu { display: none; }
+    .hero { position: relative; padding: 76px 0 78px; background: radial-gradient(ellipse at 77% 18%, rgba(235,194,123,.22), transparent 27%), linear-gradient(130deg, light-dark(#F5F8F6, #102421), light-dark(#FFFFFF, #17332E)); }
+    .hero::before { content: ""; position: absolute; width: 430px; height: 430px; right: -155px; top: -180px; border: 1px solid rgba(23,111,102,.12); border-radius: 50%; opacity: var(--site-decoration-opacity); pointer-events: none; }
+    .hero-grid { display: grid; grid-template-columns: 1fr 1.02fr; align-items: center; gap: 60px; position: relative; }
+    .hero h1 { color: light-dark(#103E3A, #F0F7F4); font-family: var(--site-font-heading); font-size: calc(clamp(42px, 5.4vw, 67px) * var(--site-heading-scale)); line-height: 1.045; letter-spacing: -.065em; margin: 19px 0 22px; max-width: 630px; }
+    .hero h1 em { color: var(--teal); font-style: normal; }
+    .hero-copy { max-width: 540px; color: light-dark(#637D76, #B1C6BE); font-size: 17px; line-height: 1.8; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 11px; margin-top: 29px; }
+    .hero-trust { display: flex; flex-wrap: wrap; align-items: center; gap: 17px; color: light-dark(#688079, #A8BDB5); font-size: 11px; margin-top: 25px; }
+    .trust-item { display: flex; align-items: center; gap: 6px; }
+    .trust-item svg { width: 15px; height: 15px; color: var(--teal); }
+    .hero-demo { position: relative; min-width: 0; }
+    .mock-window { padding: 13px; border: 1px solid light-dark(#D6E4DD, #2B4C45); background: light-dark(rgba(255,255,255,.76), rgba(19,49,43,.84)); border-radius: 22px; box-shadow: 0 30px 70px rgba(16,62,58,.16); transform: rotate(.8deg); }
+    .mock-top { display: flex; justify-content: space-between; align-items: center; padding: 6px 9px 14px; }
+    .mock-dots { display: flex; gap: 5px; }
+    .mock-dots i { width: 6px; height: 6px; display: block; border-radius: 50%; background: #D4DFDA; }
+    .mock-label { font-size: 10px; color: var(--muted); font-weight: 700; }
+    .mock-content { display: grid; grid-template-columns: 115px 1fr; min-height: 276px; overflow: hidden; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+    .mock-side { padding: 18px 12px; background: #F1F7F3; border-right: 1px solid var(--line); }
+    .mock-brand { font-size: 12px; font-weight: 850; margin-bottom: 24px; color: var(--teal-dark); }
+    .mock-nav { font-size: 9px; padding: 8px 7px; color: #728981; margin: 3px 0; border-radius: 6px; }
+    .mock-nav.active { background: #DDEEE7; color: var(--teal); font-weight: 800; }
+    .mock-main { padding: 19px; min-width: 0; }
+    .mock-heading { display: flex; align-items: center; justify-content: space-between; color: var(--teal-dark); font-size: 14px; font-weight: 850; }
+    .mock-date { font-size: 8px; color: var(--muted); font-weight: 500; }
+    .mock-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 15px; }
+    .mock-stat { padding: 10px 9px; border: 1px solid #E5ECE7; border-radius: 8px; }
+    .mock-stat span { display: block; color: #789087; font-size: 7px; }
+    .mock-stat strong { display: block; margin-top: 5px; color: var(--teal-dark); font-size: 18px; }
+    .mock-lower { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 11px; }
+    .mock-panel { border: 1px solid #E5ECE7; border-radius: 8px; padding: 11px; min-width: 0; }
+    .mock-panel-title { font-size: 9px; font-weight: 800; color: var(--teal-dark); margin-bottom: 9px; }
+    .mock-visit { display: flex; gap: 7px; align-items: center; margin: 9px 0; }
+    .mock-avatar { width: 21px; height: 21px; border-radius: 7px; background: #DDEEE7; color: var(--teal); display: grid; place-items: center; font-size: 8px; font-weight: 800; }
+    .mock-visit strong { display: block; font-size: 8px; color: #34544C; }
+    .mock-visit span { display: block; font-size: 7px; color: #82948E; }
+    .mini-bars { display: flex; align-items: end; height: 91px; gap: 7px; padding-top: 6px; }
+    .mini-bar { flex: 1; border-radius: 4px 4px 1px 1px; background: #B9DBD0; }
+    .mini-bar:nth-child(2n) { background: var(--teal); }
+    .float-note { position: absolute; bottom: -21px; left: -24px; padding: 13px 16px; display: flex; align-items: center; gap: 11px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 12px 30px rgba(16,62,58,.12); transform: rotate(-1.5deg); }
+    .float-check { width: 31px; height: 31px; display: grid; place-items: center; border-radius: 10px; color: var(--teal); background: var(--teal-soft); }
+    .float-note strong { display: block; font-size: 11px; }
+    .float-note span { display: block; color: var(--muted); font-size: 9px; margin-top: 2px; }
+    .proof-strip { background: var(--teal-dark); color: #DDECE6; padding: 24px 0; }
+    .proof-inner { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+    .proof-lead { color: #B7CFC5; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-weight: 800; }
+    .proof-items { display: flex; flex-wrap: wrap; gap: 28px; font-size: 13px; font-weight: 700; }
+    .proof-items span { display: inline-flex; align-items: center; gap: 8px; }
+    .proof-items svg { width: 16px; height: 16px; color: var(--gold); }
+    .section { padding: 88px 0; }
+    .section-head { max-width: 680px; margin: 0 auto 43px; text-align: center; }
+    .section-head h2 { font-family: var(--site-font-heading); font-size: calc(clamp(29px, 3.6vw, 43px) * var(--site-heading-scale)); color: light-dark(#103E3A, #F0F7F4); letter-spacing: -.05em; line-height: 1.12; margin: 15px 0; }
+    .section-head p { color: light-dark(#688079, #B1C6BE); line-height: 1.75; font-size: 15px; }
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 17px; }
+    .feature-card { min-height: 220px; padding: 27px; border: 1px solid var(--line); border-radius: calc(20px * var(--site-radius-scale)); background: light-dark(#FFFFFF, #16332D); transition: transform .18s ease, box-shadow .18s ease; }
+    .feature-card:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(16,62,58,.08); }
+    .feature-icon { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 15px; color: var(--teal); background: var(--teal-soft); margin-bottom: 22px; }
+    .feature-icon svg { width: 23px; height: 23px; }
+    .feature-card h3 { color: light-dark(#103E3A, #EAF4F0); font-size: 16px; margin: 0 0 10px; }
+    .feature-card p { color: light-dark(#688079, #B1C6BE); font-size: 13px; line-height: 1.75; margin: 0; }
+    .workflow { background: light-dark(#EDF4F0, #132C27); }
+    .workflow-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+    .workflow-copy h2 { color: light-dark(#103E3A, #F0F7F4); font-size: calc(clamp(30px, 3.6vw, 43px) * var(--site-heading-scale)); letter-spacing: -.05em; line-height: 1.12; margin: 15px 0; }
+    .workflow-copy > p { color: light-dark(#688079, #B1C6BE); font-size: 14px; line-height: 1.8; }
+    .step-list { list-style: none; padding: 0; display: grid; gap: 17px; margin: 28px 0 0; }
+    .step-list li { display: flex; gap: 14px; align-items: flex-start; }
+    .step-num { flex: 0 0 34px; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 12px; color: var(--teal); background: white; border: 1px solid var(--line); font-size: 12px; font-weight: 850; }
+    .step-list strong { display: block; color: light-dark(#244C44, #DCECE5); font-size: 14px; margin: 2px 0 4px; }
+    .step-list span:last-child { color: light-dark(#688079, #B1C6BE); font-size: 12px; line-height: 1.65; }
+    .workflow-card { padding: 25px; border-radius: 24px; background: var(--teal-dark); color: white; box-shadow: 0 24px 55px rgba(16,62,58,.15); }
+    .workflow-card-top { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-bottom: 19px; border-bottom: 1px solid rgba(255,255,255,.13); }
+    .workflow-card-top strong { font-size: 14px; }
+    .workflow-card-top span { font-size: 10px; color: #B8D1C7; }
+    .workflow-row { display: flex; align-items: center; gap: 13px; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,.1); }
+    .workflow-row:last-child { border-bottom: 0; }
+    .workflow-row-icon { width: 37px; height: 37px; border-radius: 12px; display: grid; place-items: center; background: rgba(255,255,255,.1); color: var(--gold); }
+    .workflow-row-icon svg { width: 18px; height: 18px; }
+    .workflow-row-copy { flex: 1; }
+    .workflow-row-copy strong { display: block; font-size: 12px; }
+    .workflow-row-copy span { display: block; color: #B7CFC5; font-size: 10px; margin-top: 3px; }
+    .workflow-status { font-size: 9px; color: #C6EBDC; background: rgba(133,210,175,.12); padding: 5px 8px; border-radius: 20px; }
+    .cta-section { padding: 76px 0; }
+    .cta-card { position: relative; overflow: hidden; display: flex; align-items: center; justify-content: space-between; gap: 30px; padding: 45px 50px; border-radius: 26px; background: var(--teal); color: white; }
+    .cta-card::after { content: ""; width: 310px; height: 310px; border: 1px solid rgba(255,255,255,.15); border-radius: 50%; position: absolute; right: 100px; top: -210px; opacity: var(--site-decoration-opacity); }
+    .cta-card h2 { position: relative; z-index: 1; font-size: calc(clamp(26px, 3.2vw, 38px) * var(--site-heading-scale)); letter-spacing: -.045em; line-height: 1.15; margin: 0 0 10px; }
+    .cta-card p { position: relative; z-index: 1; margin: 0; font-size: 13px; color: #D3E6DF; line-height: 1.65; }
+    .cta-card .btn { position: relative; z-index: 1; flex: 0 0 auto; }
+    .site-footer { padding: 25px 0; border-top: 1px solid var(--line); color: light-dark(#70857D, #9BB2A9); font-size: 11px; }
+    .footer-inner { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; }
+
+    /* Demo dashboard */
+    .dashboard-shell { min-height: 100vh; display: grid; grid-template-columns: 238px minmax(0,1fr); background: light-dark(#F4F7F5, #102421); color: light-dark(#203A37, #EAF4F0); }
+    .sidebar { background: light-dark(#FFFFFF, #15302B); border-right: 1px solid var(--line); padding: 23px 16px; display: flex; flex-direction: column; min-height: 100vh; }
+    .sidebar .brand { padding: 0 9px 28px; }
+    .sidebar-section-label { padding: 0 12px; color: light-dark(#93A69E, #78978C); font-size: 9px; letter-spacing: .15em; font-weight: 850; text-transform: uppercase; margin: 12px 0 10px; }
+    .side-link { width: 100%; display: flex; align-items: center; gap: 12px; text-align: left; padding: 12px 13px; border: 0; background: transparent; color: light-dark(#647D74, #A8C1B7); border-radius: 12px; font-size: 12px; font-weight: 700; margin: 2px 0; }
+    .side-link svg { width: 17px; height: 17px; }
+    .side-link:hover { background: light-dark(#F1F6F3, #1B3B34); color: var(--teal); }
+    .side-link.active { background: var(--teal-soft); color: var(--teal); }
+    .sidebar-bottom { margin-top: auto; }
+    .help-card { margin: 20px 3px 15px; padding: 15px; background: light-dark(#F3F7F4, #1B3B34); border: 1px solid var(--line); border-radius: 15px; }
+    .help-card strong { font-size: 11px; color: light-dark(#355D52, #DCECE5); display: block; margin-bottom: 5px; }
+    .help-card p { margin: 0 0 10px; color: light-dark(#7B9188, #A8C1B7); font-size: 10px; line-height: 1.6; }
+    .help-card button { width: 100%; min-height: 30px; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; color: var(--teal); font-size: 10px; font-weight: 800; }
+    .profile { display: flex; gap: 9px; align-items: center; padding: 14px 8px 0; border-top: 1px solid var(--line); }
+    .profile-avatar { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; background: #D9EBE4; color: var(--teal); font-size: 10px; font-weight: 900; }
+    .profile strong { display: block; font-size: 11px; }
+    .profile span { display: block; color: var(--muted); font-size: 9px; margin-top: 3px; }
+    .dash-main { min-width: 0; }
+    .dash-topbar { height: 74px; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; gap: 16px; border-bottom: 1px solid var(--line); background: light-dark(rgba(255,255,255,.7), rgba(18,43,38,.82)); }
+    .breadcrumbs { color: var(--muted); font-size: 11px; }
+    .breadcrumbs strong { color: light-dark(#23483F, #DFECE6); }
+    .topbar-actions { display: flex; align-items: center; gap: 10px; }
+    .demo-chip { display: flex; align-items: center; gap: 7px; padding: 7px 10px; border-radius: 8px; border: 1px solid #E2CC9C; background: #FFF7E8; color: #86652D; font-size: 10px; font-weight: 800; }
+    .demo-chip span { width: 6px; height: 6px; border-radius: 50%; background: #D5A447; }
+    .dash-content { padding: 29px 30px 36px; max-width: 1450px; margin: 0 auto; }
+    .page-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 17px; margin-bottom: 25px; }
+    .page-heading h1 { color: light-dark(#173D36, #F0F7F4); font-size: calc(27px * var(--site-heading-scale)); letter-spacing: -.05em; line-height: 1.2; margin: 0 0 7px; }
+    .page-heading p { color: var(--muted); font-size: 12px; margin: 0; }
+    .heading-actions { display: flex; flex-wrap: wrap; gap: 9px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; margin-bottom: 20px; }
+    .stat-card { padding: 18px; background: light-dark(#FFFFFF, #16332D); border: 1px solid var(--line); border-radius: 16px; min-width: 0; }
+    .stat-card-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; color: var(--muted); font-size: 10px; font-weight: 700; }
+    .stat-icon { width: 33px; height: 33px; display: grid; place-items: center; border-radius: 11px; background: var(--teal-soft); color: var(--teal); }
+    .stat-icon svg { width: 17px; height: 17px; }
+    .stat-num { display: block; font-size: 29px; letter-spacing: -.06em; font-weight: 850; color: light-dark(#173D36, #EAF4F0); margin-top: 13px; }
+    .stat-foot { font-size: 10px; color: var(--muted); margin-top: 4px; }
+    .trend { color: var(--green); font-weight: 800; }
+    .overview-grid { display: grid; grid-template-columns: minmax(0,1.45fr) minmax(280px,.9fr); gap: 16px; }
+    .panel { background: light-dark(#FFFFFF, #16332D); border: 1px solid var(--line); border-radius: 17px; min-width: 0; }
+    .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 19px 20px; border-bottom: 1px solid var(--line); }
+    .panel-head h2 { font-size: 13px; color: light-dark(#254A41, #DFECE6); margin: 0; }
+    .panel-head p { font-size: 10px; color: var(--muted); margin: 4px 0 0; }
+    .text-link { color: var(--teal); font-size: 10px; font-weight: 850; border: 0; background: transparent; }
+    .chart-area { padding: 19px 20px 16px; }
+    .chart-summary { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; }
+    .chart-summary strong { font-size: 25px; color: light-dark(#173D36, #EAF4F0); letter-spacing: -.05em; }
+    .chart-summary span { font-size: 10px; color: var(--muted); }
+    .bar-chart { height: 160px; display: flex; align-items: end; gap: clamp(7px, 2.1vw, 19px); border-bottom: 1px solid var(--line); padding: 0 3px; }
+    .bar-column { height: 100%; display: flex; align-items: center; justify-content: end; flex-direction: column; flex: 1; gap: 8px; min-width: 0; }
+    .bar-value { font-size: 9px; font-weight: 800; color: var(--muted); }
+    .bar { width: min(100%, 28px); border-radius: 6px 6px 2px 2px; background: #B9DCCF; min-height: 5px; transition: height .2s ease; }
+    .bar.today { background: var(--teal); }
+    .bar-label { color: var(--muted); font-size: 9px; padding-top: 10px; }
+    .chart-legend { display: flex; gap: 15px; margin-top: 16px; font-size: 9px; color: var(--muted); }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .legend-dot { width: 7px; height: 7px; border-radius: 3px; background: var(--teal); }
+    .legend-dot.pale { background: #B9DCCF; }
+    .visits-list { padding: 6px 19px 12px; }
+    .visit-item { padding: 13px 0; display: flex; align-items: flex-start; gap: 11px; border-bottom: 1px solid light-dark(#EDF2EF, #27453E); }
+    .visit-item:last-child { border-bottom: 0; }
+    .visit-time { min-width: 47px; color: var(--teal); font-size: 10px; font-weight: 850; padding-top: 3px; }
+    .visit-details { flex: 1; min-width: 0; }
+    .visit-details strong { display: block; font-size: 11px; color: light-dark(#2A4E44, #E0ECE6); }
+    .visit-details span { display: block; font-size: 9px; color: var(--muted); margin-top: 4px; }
+    .status-pill { display: inline-flex; align-items: center; white-space: nowrap; padding: 5px 8px; border-radius: 30px; background: #E2F2E9; color: #287D60; font-size: 9px; font-weight: 800; }
+    .status-pill.review { background: #FFF1D8; color: #A76A20; }
+    .status-pill.inactive { background: #FCE8E7; color: #A94B4B; }
+    .table-panel { overflow: hidden; }
+    .table-toolbar { padding: 15px 19px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; border-bottom: 1px solid var(--line); }
+    .search-box { min-height: 37px; display: flex; align-items: center; gap: 8px; padding: 0 11px; border: 1px solid var(--line); background: light-dark(#FFFFFF, #17342E); border-radius: 10px; min-width: min(100%, 250px); }
+    .search-box svg { width: 15px; height: 15px; color: var(--muted); flex: 0 0 auto; }
+    .search-box input { width: 100%; min-width: 0; outline: none; border: 0; background: transparent; color: inherit; font-size: 11px; }
+    .filter-select { min-height: 37px; padding: 0 11px; color: light-dark(#46635A, #C2D4CC); border: 1px solid var(--line); background: light-dark(#FFFFFF, #17342E); border-radius: 10px; font-size: 11px; outline-color: var(--teal); }
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+    thead { background: light-dark(#F8FAF9, #193830); }
+    th { color: var(--muted); text-align: left; padding: 12px 18px; font-size: 9px; letter-spacing: .06em; text-transform: uppercase; font-weight: 850; }
+    td { color: light-dark(#3E5C52, #D6E6DF); padding: 13px 18px; border-top: 1px solid light-dark(#EDF2EF, #27453E); font-size: 11px; }
+    .person-cell { display: flex; align-items: center; gap: 10px; }
+    .person-avatar { width: 31px; height: 31px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 10px; color: var(--teal); background: #E2F0E9; font-size: 9px; font-weight: 900; }
+    .person-cell strong { display: block; color: light-dark(#254A41, #E1EEE8); font-size: 11px; }
+    .person-cell span { display: block; color: var(--muted); font-size: 9px; margin-top: 3px; }
+    .id-cell { font-weight: 800; color: var(--muted); font-size: 10px; }
+    .row-action { border: 0; background: transparent; color: var(--teal); font-size: 10px; font-weight: 800; }
+    .empty-state { padding: 35px 18px; text-align: center; color: var(--muted); font-size: 12px; }
+    .schedule-list { padding: 0 20px; }
+    .schedule-date { padding: 20px 0 6px; color: var(--teal); font-size: 10px; text-transform: uppercase; font-weight: 850; letter-spacing: .1em; }
+    .schedule-row { display: grid; grid-template-columns: 70px minmax(130px,1fr) minmax(130px,1fr) 100px; gap: 16px; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--line); }
+    .schedule-row:last-child { border-bottom: 0; }
+    .schedule-time { font-size: 11px; font-weight: 850; color: light-dark(#244A40, #E1EEE8); }
+    .schedule-person { min-width: 0; }
+    .schedule-person span { display: block; color: var(--muted); font-size: 9px; margin-bottom: 4px; }
+    .schedule-person strong { display: block; color: light-dark(#31574C, #DCECE5); font-size: 11px; overflow: hidden; text-overflow: ellipsis; }
+    .schedule-service { color: var(--muted); font-size: 10px; }
+    .privacy-note { display: flex; gap: 9px; align-items: flex-start; padding: 12px 14px; margin-top: 17px; border-radius: 12px; background: light-dark(#FFF7E8, #3B3321); color: light-dark(#8B6B31, #E7CC95); font-size: 10px; line-height: 1.6; }
+    .privacy-note svg { width: 15px; height: 15px; flex: 0 0 auto; }
+
+    /* Modal */
+    .modal-backdrop { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 18px; background: rgba(8,30,26,.55); backdrop-filter: blur(4px); }
+    .modal { width: min(100%, 500px); max-height: min(90vh, 760px); overflow: auto; background: light-dark(#FFFFFF, #16332D); color: light-dark(#203A37, #EAF4F0); border: 1px solid var(--line); border-radius: 22px; box-shadow: 0 30px 90px rgba(0,0,0,.2); }
+    .modal-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 23px 24px 16px; border-bottom: 1px solid var(--line); }
+    .modal-head h2 { font-size: 19px; letter-spacing: -.03em; margin: 0 0 5px; color: light-dark(#173D36, #EDF6F2); }
+    .modal-head p { font-size: 11px; margin: 0; color: var(--muted); line-height: 1.5; }
+    .modal-body { padding: 21px 24px 24px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-field { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+    .form-field.full { grid-column: 1 / -1; }
+    .form-field label { color: light-dark(#4E6B61, #BDD0C7); font-size: 10px; font-weight: 800; }
+    .form-field input, .form-field select { width: 100%; min-height: 40px; outline-color: var(--teal); border: 1px solid var(--line); border-radius: 10px; padding: 0 11px; color: light-dark(#203A37, #EAF4F0); background: light-dark(#FFFFFF, #17342E); font-size: 11px; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 9px; padding-top: 20px; }
+    .toast { position: fixed; right: 24px; bottom: 24px; z-index: 100; max-width: calc(100% - 48px); padding: 13px 17px; border-radius: 13px; background: #103E3A; color: white; box-shadow: 0 12px 28px rgba(0,0,0,.2); font-size: 12px; animation: toast-in .2s ease both; }
+    @keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 1000px) {
+      .hero-grid { gap: 35px; }
+      .nav-links { gap: 17px; }
+      .stats-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .overview-grid { grid-template-columns: minmax(0,1.2fr) minmax(260px,.9fr); }
+      .dash-content { padding: 24px 20px 30px; }
+      .dash-topbar { padding: 0 20px; }
+      .dashboard-shell { grid-template-columns: 210px minmax(0,1fr); }
+    }
+    @media (max-width: 780px) {
+      .container { width: min(100% - 34px, 1190px); }
+      .nav-links { display: none; }
+      .nav-menu { display: inline-flex; }
+      .nav-actions .btn-outline { display: none; }
+      .hero { padding: 58px 0 70px; }
+      .hero-grid, .workflow-grid { grid-template-columns: 1fr; }
+      .hero-grid { gap: 42px; }
+      .hero-copy { font-size: 15px; }
+      .hero-demo { max-width: 570px; width: 100%; margin: 0 auto 10px; }
+      .features-grid { grid-template-columns: repeat(2, 1fr); }
+      .workflow-grid { gap: 32px; }
+      .cta-card { align-items: flex-start; flex-direction: column; padding: 34px 27px; }
+      .dashboard-shell { grid-template-columns: 1fr; }
+      .sidebar { min-height: auto; padding: 12px 15px; border-right: 0; border-bottom: 1px solid var(--line); }
+      .sidebar .brand { padding: 0 6px 12px; }
+      .sidebar-section-label, .sidebar-bottom { display: none; }
+      .sidebar nav { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 1px; }
+      .side-link { width: auto; flex: 0 0 auto; padding: 9px 11px; margin: 0; }
+      .side-link span { white-space: nowrap; }
+      .dash-topbar { height: 60px; }
+      .overview-grid { grid-template-columns: 1fr; }
+      .schedule-row { grid-template-columns: 60px minmax(100px,1fr) minmax(100px,1fr); gap: 10px; }
+      .schedule-row .status-pill { display: none; }
+      .float-note { left: 5px; }
+    }
+    @media (max-width: 520px) {
+      .container { width: min(100% - 28px, 1190px); }
+      .site-header { height: 67px; }
+      .brand-name { font-size: 18px; }
+      .brand-mark { width: 34px; height: 34px; }
+      .nav-actions .btn { padding: 0 12px; min-height: 39px; font-size: 11px; }
+      .hero h1 { font-size: calc(42px * var(--site-heading-scale)); }
+      .hero-actions { flex-direction: column; align-items: stretch; }
+      .hero-actions .btn { width: 100%; }
+      .mock-window { padding: 8px; }
+      .mock-content { grid-template-columns: 77px 1fr; }
+      .mock-side { padding: 13px 6px; }
+      .mock-brand { font-size: 9px; }
+      .mock-nav { font-size: 7px; padding: 7px 4px; }
+      .mock-main { padding: 12px 9px; }
+      .mock-stats { gap: 4px; }
+      .mock-stat { padding: 7px 5px; }
+      .mock-stat strong { font-size: 14px; }
+      .mock-lower { gap: 5px; }
+      .mock-panel { padding: 7px 5px; }
+      .mock-visit { gap: 4px; }
+      .mock-panel-title { font-size: 8px; }
+      .mock-visit strong { font-size: 7px; }
+      .mock-visit span { font-size: 6px; }
+      .float-note { bottom: -29px; padding: 9px 11px; }
+      .proof-inner { align-items: flex-start; flex-direction: column; gap: 13px; }
+      .proof-items { gap: 13px; font-size: 11px; }
+      .section { padding: 65px 0; }
+      .features-grid { grid-template-columns: 1fr; }
+      .feature-card { min-height: auto; }
+      .workflow-card { padding: 18px; }
+      .cta-section { padding: 54px 0; }
+      .cta-card { padding: 29px 22px; }
+      .footer-inner { flex-direction: column; }
+      .dash-topbar { padding: 0 13px; }
+      .dash-content { padding: 21px 13px 25px; }
+      .page-heading { flex-direction: column; align-items: stretch; }
+      .page-heading h1 { font-size: 24px; }
+      .heading-actions .btn { flex: 1; }
+      .stats-grid { gap: 9px; }
+      .stat-card { padding: 13px; }
+      .stat-card-top { font-size: 9px; }
+      .stat-icon { width: 28px; height: 28px; }
+      .stat-num { font-size: 25px; }
+      .panel-head { padding: 15px; }
+      .chart-area { padding: 15px; }
+      .visits-list { padding: 5px 15px 10px; }
+      .table-toolbar { align-items: stretch; }
+      .search-box { width: 100%; }
+      .table-toolbar .filter-select { flex: 1; }
+      .schedule-list { padding: 0 13px; }
+      .schedule-row { grid-template-columns: 51px minmax(0,1fr); gap: 10px; }
+      .schedule-row .caregiver-col { grid-column: 2; }
+      .schedule-row .schedule-service { grid-column: 2; margin-top: -5px; }
+      .demo-chip { font-size: 9px; padding: 7px 8px; }
+      .topbar-actions .icon-btn { display: none; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-field.full { grid-column: auto; }
+      .modal-head, .modal-body { padding-left: 18px; padding-right: 18px; }
+    }
+    /* Bright CareNest theme: royal blue, fresh sky and sunny yellow */
+    :root {
+      --site-primary: #2563EB;
+      --site-on-primary: #FFFFFF;
+      --site-secondary: #FFD166;
+      --site-on-secondary: #1E2A44;
+      --site-background: #F4F7FF;
+      --site-on-background: #1E2A44;
+      --teal-dark: #193A8A;
+      --teal: #2563EB;
+      --teal-soft: #E7EEFF;
+      --gold: #FFD166;
+      --ink: #1E2A44;
+      --muted: #64748B;
+      --line: #DDE5F2;
+      --surface: #FFFFFF;
+      --surface-soft: #F4F7FF;
+      --green: #15803D;
+      --red: #B91C1C;
+      --orange: #B45309;
+    }
+    body { background: light-dark(#F4F7FF, #101A33); color: light-dark(#1E2A44, #EAF0FF); }
+    #app-root { background-color: var(--site-background); background: light-dark(var(--site-background), #101A33); color: light-dark(var(--site-on-background), #EAF0FF); }
+    .btn:hover { background: #1D4ED8; }
+    .hero { background: radial-gradient(ellipse at 77% 18%, rgba(255,209,102,.28), transparent 27%), linear-gradient(130deg, light-dark(#EEF4FF, #101A33), light-dark(#FFFFFF, #18264A)); }
+    .hero::before { border-color: rgba(37,99,235,.16); }
+    .hero h1, .section-head h2, .workflow-copy h2 { color: light-dark(#193A8A, #F0F4FF); }
+    .hero-copy, .hero-trust { color: light-dark(#64748B, #B8C4DE); }
+    .mock-side { background: #F1F5FF; }
+    .mock-brand, .mock-heading, .mock-stat strong, .mock-panel-title { color: #193A8A; }
+    .mock-nav { color: #64748B; }
+    .mock-nav.active { background: #E1E9FF; color: #2563EB; }
+    .mock-avatar, .float-check { background: #E1E9FF; color: #2563EB; }
+    .mock-visit strong { color: #334A7D; }
+    .mock-stat, .mock-panel { border-color: #E2E9F8; }
+    .mini-bar { background: #B9CCFF; }
+    .workflow { background: light-dark(#EEF4FF, #121F3A); }
+    .step-num { color: #2563EB; }
+    .workflow-row-icon { color: #FFD166; }
+    .dashboard-shell { background: light-dark(#F4F7FF, #101A33); color: light-dark(#1E2A44, #EAF0FF); }
+    .sidebar { background: light-dark(#FFFFFF, #14213D); }
+    .side-link { color: light-dark(#64748B, #B8C4DE); }
+    .side-link:hover { background: light-dark(#EEF4FF, #1B2E52); color: #2563EB; }
+    .side-link.active { background: #E7EEFF; color: #2563EB; }
+    .help-card { background: light-dark(#F1F5FF, #1B2E52); }
+    .profile-avatar, .stat-icon, .person-avatar { background: #E7EEFF; color: #2563EB; }
+    .dash-topbar { background: light-dark(rgba(255,255,255,.88), rgba(16,26,51,.92)); }
+    .page-heading h1, .stat-num { color: light-dark(#193A8A, #F0F4FF); }
+    .bar { background: #B9CCFF; }
+    .bar.today, .legend-dot { background: #2563EB; }
+    .legend-dot.pale { background: #B9CCFF; }
+    .panel-head h2, .visit-details strong, .person-cell strong, .schedule-time, .schedule-person strong { color: light-dark(#27437D, #DFE8FF); }
+    thead { background: light-dark(#F6F8FF, #192B4B); }
+    .search-box, .filter-select { border-color: #DDE5F2; }
+    .toast { background: #193A8A; }
+    .demo-chip { border-color: #F0CF76; background: #FFF7D6; color: #75520A; }
+    .privacy-note { background: light-dark(#FFF8DF, #3B3321); color: light-dark(#7A5A16, #E7CC95); }
+  </style>
+</head>
+<body>
+<div id="app-root"></div>
+<script>
+  const icons = {
+    logo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12.5 12 4l9 8.5"/><path d="M6.5 10.5V20h11v-9.5"/><path d="M10 20v-5h4v5"/><path d="m8.5 9.4 2.1 2.1 4.9-5"/></svg>',
+    home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>',
+    users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+    caregiver: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/><path d="M12 14v5M9.5 16.5h5"/></svg>',
+    calendar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/><path d="m8 15 2 2 5-5"/></svg>',
+    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+    search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>',
+    bell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>',
+    shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m9 12 2 2 4-4"/></svg>',
+    clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg>',
+    arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg>',
+    x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg>',
+    warning: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m10.3 3.9-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3.1l-8-14a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>',
+    download: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>',
+    trend: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg>'
+  };
+  const appRoot = document.getElementById('app-root');
+  const todayISO = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  };
+  const dateOffset = (offset) => {
+    const d = new Date(); d.setDate(d.getDate() + offset);
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  };
+  const formatDate = (iso) => {
+    if (!iso) return 'Not set';
+    return new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(`${iso}T12:00:00`));
+  };
+  const formatTime = (time) => {
+    if (!time) return '';
+    const [hours, minutes] = time.split(':').map(Number);
+    return `${(hours % 12) || 12}:${String(minutes).padStart(2,'0')} ${hours >= 12 ? 'PM' : 'AM'}`;
+  };
+  const esc = (value) => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  const initials = (name) => String(name || '?').split(/\s+/).filter(Boolean).slice(0,2).map(part => part[0].toUpperCase()).join('');
+  const sampleData = () => ({
+    patients: [
+      { id: 'PT-1042', name: 'Margaret Ellis', age: 82, care: 'Personal care', status: 'Active', city: 'North Park' },
+      { id: 'PT-1043', name: 'Robert Chen', age: 76, care: 'Companion care', status: 'Active', city: 'Lakewood' },
+      { id: 'PT-1044', name: 'Evelyn Brooks', age: 89, care: 'Post-surgery support', status: 'Review', city: 'North Park' },
+      { id: 'PT-1045', name: 'Walter James', age: 71, care: 'Medication reminders', status: 'Active', city: 'Riverside' },
+      { id: 'PT-1046', name: 'Sophia Turner', age: 68, care: 'Personal care', status: 'Active', city: 'Lakewood' },
+      { id: 'PT-1047', name: 'Daniel Foster', age: 79, care: 'Mobility support', status: 'Active', city: 'West End' }
+    ],
+    caregivers: [
+      { id: 'CG-201', name: 'Nina Patel', role: 'Certified nursing assistant', status: 'Available', phone: '(555) 010-1201' },
+      { id: 'CG-202', name: 'Omar Davis', role: 'Home health aide', status: 'On visit', phone: '(555) 010-1202' },
+      { id: 'CG-203', name: 'Leah Moore', role: 'Licensed practical nurse', status: 'Available', phone: '(555) 010-1203' },
+      { id: 'CG-204', name: 'Jamal Carter', role: 'Companion care', status: 'Available', phone: '(555) 010-1204' },
+      { id: 'CG-205', name: 'Ava Robinson', role: 'Home health aide', status: 'Off duty', phone: '(555) 010-1205' }
+    ],
+    visits: [
+      { id: 'VS-501', patientId: 'PT-1042', caregiverId: 'CG-201', date: dateOffset(0), time: '09:00', duration: '60 min', service: 'Personal care', status: 'Confirmed' },
+      { id: 'VS-502', patientId: 'PT-1043', caregiverId: 'CG-202', date: dateOffset(0), time: '10:30', duration: '45 min', service: 'Companion visit', status: 'In progress' },
+      { id: 'VS-503', patientId: 'PT-1044', caregiverId: 'CG-203', date: dateOffset(0), time: '13:00', duration: '60 min', service: 'Recovery support', status: 'Confirmed' },
+      { id: 'VS-504', patientId: 'PT-1045', caregiverId: 'CG-204', date: dateOffset(1), time: '09:30', duration: '30 min', service: 'Medication reminder', status: 'Confirmed' },
+      { id: 'VS-505', patientId: 'PT-1046', caregiverId: 'CG-201', date: dateOffset(1), time: '11:00', duration: '60 min', service: 'Personal care', status: 'Confirmed' },
+      { id: 'VS-506', patientId: 'PT-1047', caregiverId: 'CG-202', date: dateOffset(2), time: '14:00', duration: '45 min', service: 'Mobility support', status: 'Pending' }
+    ]
+  });
+  // In-memory state only: refreshing the page resets the demonstration data.
+  let data = sampleData();
+  let activePage = 'Overview';
+  let modalType = null;
+  let searchTerm = '';
+  let statusFilter = 'All statuses';
+  let toastTimer = null;
+
+  const getPatient = (id) => data.patients.find(item => item.id === id);
+  const getCaregiver = (id) => data.caregivers.find(item => item.id === id);
+  const todayVisits = () => data.visits.filter(item => item.date === todayISO()).sort((a,b) => a.time.localeCompare(b.time));
+  const patientName = (id) => getPatient(id)?.name || 'Patient removed';
+  const caregiverName = (id) => getCaregiver(id)?.name || 'Caregiver removed';
+  const brandMarkup = () => `<a class="brand" href="#home" aria-label="CareNest home"><span class="brand-mark">${icons.logo}</span><span class="brand-name">Care<span>Nest</span></span></a>`;
+
+  function renderLanding() {
+    appRoot.innerHTML = `
+      <header class="site-header">
+        <div class="container nav-wrap">
+          ${brandMarkup()}
+          <nav class="nav-links" aria-label="Main navigation">
+            <a href="#features">Platform</a><a href="#workflow">How it works</a><a href="#about">For care teams</a>
+          </nav>
+          <div class="nav-actions"><a class="btn btn-outline" href="#features">Explore features</a><button class="btn" data-action="launch-demo">Launch demo ${icons.arrow}</button><button class="icon-btn nav-menu" aria-label="Open menu" data-action="mobile-menu">☰</button></div>
+        </div>
+      </header>
+      <main>
+        <section class="hero" id="home">
+          <div class="container hero-grid">
+            <div class="hero-copy-wrap">
+              <span class="eyebrow"><i class="eyebrow-dot"></i> Home care, thoughtfully connected</span>
+              <h1>More time for care.<br><em>Less time</em> managing it.</h1>
+              <p class="hero-copy">Meet CareNest — a calmer way for home-care agencies to coordinate patient information, caregiver teams and daily visits from one connected workspace.</p>
+              <div class="hero-actions"><button class="btn btn-gold" data-action="launch-demo">Explore the live demo ${icons.arrow}</button><a class="btn btn-outline" href="#features">Discover the platform</a></div>
+              <div class="hero-trust"><span class="trust-item">${icons.check} Patient-centered workflows</span><span class="trust-item">${icons.check} Care team visibility</span><span class="trust-item">${icons.check} Clear daily scheduling</span></div>
+            </div>
+            <div class="hero-demo" aria-label="CareNest dashboard preview">
+              <div class="mock-window"><div class="mock-top"><div class="mock-dots"><i></i><i></i><i></i></div><span class="mock-label">CareNest / Overview</span><span class="mock-label">DEMO</span></div>
+                <div class="mock-content"><aside class="mock-side"><div class="mock-brand">CareNest</div><div class="mock-nav active">▦ &nbsp; Overview</div><div class="mock-nav">♙ &nbsp; Patients</div><div class="mock-nav">♡ &nbsp; Caregivers</div><div class="mock-nav">▣ &nbsp; Schedule</div></aside>
+                  <div class="mock-main"><div class="mock-heading">Good morning, Alex <span class="mock-date">TODAY</span></div><div class="mock-stats"><div class="mock-stat"><span>Active patients</span><strong>128</strong></div><div class="mock-stat"><span>Care team</span><strong>36</strong></div><div class="mock-stat"><span>Visits today</span><strong>54</strong></div></div>
+                    <div class="mock-lower"><div class="mock-panel"><div class="mock-panel-title">Today's visits</div><div class="mock-visit"><div class="mock-avatar">ME</div><div><strong>Margaret Ellis</strong><span>9:00 AM · Personal care</span></div></div><div class="mock-visit"><div class="mock-avatar">RC</div><div><strong>Robert Chen</strong><span>10:30 AM · Companion</span></div></div><div class="mock-visit"><div class="mock-avatar">EB</div><div><strong>Evelyn Brooks</strong><span>1:00 PM · Recovery</span></div></div></div>
+                      <div class="mock-panel"><div class="mock-panel-title">Weekly visit activity</div><div class="mini-bars"><i class="mini-bar" style="height:45%"></i><i class="mini-bar" style="height:64%"></i><i class="mini-bar" style="height:52%"></i><i class="mini-bar" style="height:83%"></i><i class="mini-bar" style="height:72%"></i><i class="mini-bar" style="height:91%"></i><i class="mini-bar" style="height:60%"></i></div></div></div>
+                  </div>
+                </div>
+              </div>
+              <div class="float-note"><div class="float-check">${icons.check}</div><div><strong>Your day, in better focus</strong><span>Patients, people and visits together</span></div></div>
+            </div>
+          </div>
+        </section>
+        <section class="proof-strip"><div class="container proof-inner"><span class="proof-lead">Designed around everyday care</span><div class="proof-items"><span>${icons.heart} Person-first planning</span><span>${icons.calendar} Schedule clarity</span><span>${icons.shield} Care team coordination</span><span>${icons.trend} Operational visibility</span></div></div></section>
+        <section class="section" id="features"><div class="container"><div class="section-head"><span class="eyebrow"><i class="eyebrow-dot"></i> One connected workspace</span><h2>The essentials of home care,<br>all in one place.</h2><p>Give coordinators a clearer view of who needs care, who is providing it, and what is happening next.</p></div>
+          <div class="features-grid">
+            <article class="feature-card"><div class="feature-icon">${icons.users}</div><h3>Patient profiles</h3><p>Keep key patient details, care needs and status together so your team can find the context they need quickly.</p></article>
+            <article class="feature-card"><div class="feature-icon">${icons.caregiver}</div><h3>Caregiver directory</h3><p>See your care team, roles and availability in one place to make coordination feel less scattered.</p></article>
+            <article class="feature-card"><div class="feature-icon">${icons.calendar}</div><h3>Visit scheduling</h3><p>Organize upcoming visits by patient, caregiver, time and service. Spot the day's work at a glance.</p></article>
+            <article class="feature-card"><div class="feature-icon">${icons.clock}</div><h3>Daily visibility</h3><p>Bring today's activity and upcoming commitments into a focused overview for coordinators.</p></article>
+            <article class="feature-card"><div class="feature-icon">${icons.shield}</div><h3>Thoughtful workflows</h3><p>Make the important steps easier to follow with clean screens and clear statuses throughout the day.</p></article>
+            <article class="feature-card"><div class="feature-icon">${icons.trend}</div><h3>At-a-glance insights</h3><p>Review simple operational indicators and activity trends without hunting through separate screens.</p></article>
+          </div>
+        </div></section>
+        <section class="section workflow" id="workflow"><div class="container workflow-grid"><div class="workflow-copy"><span class="eyebrow"><i class="eyebrow-dot"></i> Built for the rhythm of care</span><h2>A clearer day for coordinators and care teams.</h2><p>CareNest brings the everyday building blocks of home-care coordination into a straightforward workspace, so teams can spend less time switching between lists.</p><ul class="step-list"><li><span class="step-num">01</span><span><strong>Know your patients</strong><span>Keep care needs and patient details easy to find.</span></span></li><li><span class="step-num">02</span><span><strong>Keep your team in view</strong><span>See caregiver roles and availability at a glance.</span></span></li><li><span class="step-num">03</span><span><strong>Plan visits with context</strong><span>Connect a visit to the right patient, caregiver and time.</span></span></li></ul></div>
+          <div class="workflow-card"><div class="workflow-card-top"><strong>Today's coordination</strong><span>${formatDate(todayISO())}</span></div><div class="workflow-row"><div class="workflow-row-icon">${icons.users}</div><div class="workflow-row-copy"><strong>Patient details ready</strong><span>Review needs before each visit</span></div><span class="workflow-status">Organized</span></div><div class="workflow-row"><div class="workflow-row-icon">${icons.caregiver}</div><div class="workflow-row-copy"><strong>Care team visible</strong><span>Roles and availability together</span></div><span class="workflow-status">Connected</span></div><div class="workflow-row"><div class="workflow-row-icon">${icons.calendar}</div><div class="workflow-row-copy"><strong>Visits in one schedule</strong><span>Time, service and people aligned</span></div><span class="workflow-status">Planned</span></div><div class="workflow-row"><div class="workflow-row-icon">${icons.heart}</div><div class="workflow-row-copy"><strong>More focus on people</strong><span>Less operational friction</span></div><span class="workflow-status">The goal</span></div></div>
+        </div></section>
+        <section class="section" id="about"><div class="container"><div class="section-head"><span class="eyebrow"><i class="eyebrow-dot"></i> Step inside CareNest</span><h2>See the workflow for yourself.</h2><p>Open the interactive demo to explore patient, caregiver and schedule modules. Add demo records and see the dashboard update in this browser session.</p></div><div class="cta-card"><div><h2>Ready to explore the workspace?</h2><p>Launch the demo. No account setup required.<br>Sample information only — changes are temporary and local to this page session.</p></div><button class="btn btn-gold" data-action="launch-demo">Launch interactive demo ${icons.arrow}</button></div></div></section>
+      </main>
+      <footer class="site-footer"><div class="container footer-inner"><span>© ${new Date().getFullYear()} CareNest. A home-care software concept demo.</span><span>Demonstration only · No real patient information</span></div></footer>`;
+  }
+
+  function navItem(page, icon, label) {
+    return `<button class="side-link ${activePage === page ? 'active' : ''}" data-action="navigate" data-page="${page}">${icon}<span>${label}</span></button>`;
+  }
+  function statCard(label, value, note, icon) {
+    return `<article class="stat-card"><div class="stat-card-top"><span>${label}</span><i class="stat-icon">${icon}</i></div><strong class="stat-num">${value}</strong><div class="stat-foot">${note}</div></article>`;
+  }
+  function personCell(name, subtitle) {
+    return `<div class="person-cell"><span class="person-avatar">${esc(initials(name))}</span><div><strong>${esc(name)}</strong><span>${esc(subtitle)}</span></div></div>`;
+  }
+  function statusPill(status) {
+    const cls = status === 'Review' || status === 'Pending' || status === 'On visit' ? 'review' : (status === 'Off duty' || status === 'Inactive' ? 'inactive' : '');
+    return `<span class="status-pill ${cls}">${esc(status)}</span>`;
+  }
+  function renderOverview() {
+    const today = todayVisits();
+    const activePatients = data.patients.filter(p => p.status === 'Active').length;
+    const available = data.caregivers.filter(c => c.status === 'Available').length;
+    const week = [6,5,4,3,2,1,0].map((offset, index) => {
+      const date = dateOffset(-offset);
+      const count = data.visits.filter(v => v.date === date).length;
+      return { day: new Intl.DateTimeFormat(undefined, {weekday:'short'}).format(new Date(`${date}T12:00:00`)), count, isToday: offset === 0 };
+    });
+    const peak = Math.max(4, ...week.map(w => w.count));
+    return `<div class="page-heading"><div><h1>Good ${new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 18 ? 'afternoon' : 'evening'}, Alex</h1><p>Here's what's happening across your care team today.</p></div><div class="heading-actions"><button class="btn btn-outline btn-sm" data-action="navigate" data-page="Schedule">${icons.calendar} View schedule</button><button class="btn btn-sm" data-action="open-modal" data-type="visit">${icons.plus} Add visit</button></div></div>
+      <div class="stats-grid">${statCard('Active patients', activePatients, 'In your demo directory', icons.users)}${statCard('Care team members', data.caregivers.length, `${available} currently available`, icons.caregiver)}${statCard('Visits today', today.length, 'Scheduled for today', icons.calendar)}${statCard('Needs review', data.patients.filter(p => p.status === 'Review').length, 'Patient profiles to check', icons.shield)}</div>
+      <div class="overview-grid"><section class="panel"><div class="panel-head"><div><h2>Visit activity</h2><p>Visits scheduled during the last 7 days</p></div><button class="text-link" data-action="navigate" data-page="Schedule">Full schedule →</button></div><div class="chart-area"><div class="chart-summary"><strong>${data.visits.length}</strong><span>scheduled demo visits in total</span></div><div class="bar-chart">${week.map(w => `<div class="bar-column"><span class="bar-value">${w.count || ''}</span><div class="bar ${w.isToday ? 'today' : ''}" style="height:${Math.max(5, (w.count / peak) * 118)}px"></div><span class="bar-label">${esc(w.day)}</span></div>`).join('')}</div><div class="chart-legend"><span class="legend-item"><i class="legend-dot"></i> Today</span><span class="legend-item"><i class="legend-dot pale"></i> Other days</span></div></div></section>
+      <section class="panel"><div class="panel-head"><div><h2>Today's visits</h2><p>${formatDate(todayISO())}</p></div><button class="text-link" data-action="navigate" data-page="Schedule">View all</button></div><div class="visits-list">${today.length ? today.slice(0,4).map(v => `<div class="visit-item"><div class="visit-time">${formatTime(v.time)}</div><div class="visit-details"><strong>${esc(patientName(v.patientId))}</strong><span>${esc(caregiverName(v.caregiverId))} · ${esc(v.service)}</span></div>${statusPill(v.status)}</div>`).join('') : '<div class="empty-state">No visits scheduled for today. Add a visit to get started.</div>'}</div></section></div>
+      <div class="privacy-note">${icons.warning}<span><strong>Demo mode:</strong> All records are sample data held in this browser's JavaScript memory. Nothing is sent to a server, and refreshing the page resets any changes.</span></div>`;
+  }
+
+  function renderPatients() {
+    const filtered = data.patients.filter(p => `${p.id} ${p.name} ${p.care} ${p.city}`.toLowerCase().includes(searchTerm.toLowerCase()) && (statusFilter === 'All statuses' || p.status === statusFilter));
+    return `<div class="page-heading"><div><h1>Patients</h1><p>Manage patient profiles and their current care needs.</p></div><div class="heading-actions"><button class="btn btn-sm" data-action="open-modal" data-type="patient">${icons.plus} Add patient</button></div></div>
+      <section class="panel table-panel"><div class="table-toolbar"><label class="search-box">${icons.search}<input id="tableSearch" type="search" placeholder="Search patients..." value="${esc(searchTerm)}" autocomplete="off"></label><select class="filter-select" id="statusFilter" aria-label="Filter patient status"><option ${statusFilter==='All statuses'?'selected':''}>All statuses</option><option ${statusFilter==='Active'?'selected':''}>Active</option><option ${statusFilter==='Review'?'selected':''}>Review</option><option ${statusFilter==='Inactive'?'selected':''}>Inactive</option></select><span class="muted-count" style="font-size:10px;color:var(--muted)">${filtered.length} patients</span></div><div class="table-scroll"><table><thead><tr><th>Patient</th><th>Patient ID</th><th>Care need</th><th>Location</th><th>Status</th><th>Action</th></tr></thead><tbody>${filtered.length ? filtered.map(p => `<tr><td>${personCell(p.name, `${p.age} years old`)}</td><td class="id-cell">${esc(p.id)}</td><td>${esc(p.care)}</td><td>${esc(p.city)}</td><td>${statusPill(p.status)}</td><td><button class="row-action" data-action="patient-details" data-id="${esc(p.id)}">View details</button></td></tr>`).join('') : `<tr><td colspan="6"><div class="empty-state">No patients match your search.</div></td></tr>`}</tbody></table></div></section>
+      <div class="privacy-note">${icons.warning}<span>Demo records only. A production patient directory should use secure authentication, role-based access and appropriate privacy safeguards.</span></div>`;
+  }
+
+  function renderCaregivers() {
+    const filtered = data.caregivers.filter(c => `${c.id} ${c.name} ${c.role} ${c.phone}`.toLowerCase().includes(searchTerm.toLowerCase()) && (statusFilter === 'All statuses' || c.status === statusFilter));
+    return `<div class="page-heading"><div><h1>Caregivers</h1><p>Keep track of your care team and availability.</p></div><div class="heading-actions"><button class="btn btn-sm" data-action="open-modal" data-type="caregiver">${icons.plus} Add caregiver</button></div></div>
+      <section class="panel table-panel"><div class="table-toolbar"><label class="search-box">${icons.search}<input id="tableSearch" type="search" placeholder="Search caregivers..." value="${esc(searchTerm)}" autocomplete="off"></label><select class="filter-select" id="statusFilter" aria-label="Filter caregiver status"><option ${statusFilter==='All statuses'?'selected':''}>All statuses</option><option ${statusFilter==='Available'?'selected':''}>Available</option><option ${statusFilter==='On visit'?'selected':''}>On visit</option><option ${statusFilter==='Off duty'?'selected':''}>Off duty</option></select><span style="font-size:10px;color:var(--muted)">${filtered.length} caregivers</span></div><div class="table-scroll"><table><thead><tr><th>Caregiver</th><th>Caregiver ID</th><th>Role</th><th>Phone (sample)</th><th>Availability</th><th>Action</th></tr></thead><tbody>${filtered.length ? filtered.map(c => `<tr><td>${personCell(c.name, 'Care team member')}</td><td class="id-cell">${esc(c.id)}</td><td>${esc(c.role)}</td><td>${esc(c.phone)}</td><td>${statusPill(c.status)}</td><td><button class="row-action" data-action="caregiver-details" data-id="${esc(c.id)}">View details</button></td></tr>`).join('') : `<tr><td colspan="6"><div class="empty-state">No caregivers match your search.</div></td></tr>`}</tbody></table></div></section>
+      <div class="privacy-note">${icons.warning}<span>Phone numbers are fake demo values. Do not enter real personal or patient information.</span></div>`;
+  }
+
+  function renderSchedule() {
+    const filtered = data.visits.filter(v => `${v.id} ${patientName(v.patientId)} ${caregiverName(v.caregiverId)} ${v.service}`.toLowerCase().includes(searchTerm.toLowerCase()) && (statusFilter === 'All statuses' || v.status === statusFilter)).sort((a,b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
+    const grouped = filtered.reduce((acc,v) => { (acc[v.date] ||= []).push(v); return acc; }, {});
+    return `<div class="page-heading"><div><h1>Schedule</h1><p>Coordinate visits by time, patient and caregiver.</p></div><div class="heading-actions"><button class="btn btn-sm" data-action="open-modal" data-type="visit">${icons.plus} Schedule visit</button></div></div>
+      <section class="panel table-panel"><div class="table-toolbar"><label class="search-box">${icons.search}<input id="tableSearch" type="search" placeholder="Search visits..." value="${esc(searchTerm)}" autocomplete="off"></label><select class="filter-select" id="statusFilter" aria-label="Filter visit status"><option ${statusFilter==='All statuses'?'selected':''}>All statuses</option><option ${statusFilter==='Confirmed'?'selected':''}>Confirmed</option><option ${statusFilter==='In progress'?'selected':''}>In progress</option><option ${statusFilter==='Pending'?'selected':''}>Pending</option></select><span style="font-size:10px;color:var(--muted)">${filtered.length} visits</span></div>${filtered.length ? `<div class="schedule-list">${Object.entries(grouped).map(([date, visits]) => `<div class="schedule-date">${date === todayISO() ? 'Today' : date === dateOffset(1) ? 'Tomorrow' : formatDate(date)}</div>${visits.map(v => `<div class="schedule-row"><div class="schedule-time">${formatTime(v.time)}<span style="display:block;color:var(--muted);font-size:9px;font-weight:500;margin-top:4px">${esc(v.duration)}</span></div><div class="schedule-person"><span>Patient</span><strong>${esc(patientName(v.patientId))}</strong></div><div class="schedule-person caregiver-col"><span>Caregiver</span><strong>${esc(caregiverName(v.caregiverId))}</strong></div><div>${statusPill(v.status)}</div><div class="schedule-service">${esc(v.service)} · ${esc(v.id)}</div></div>`).join('')}`).join('')}</div>` : '<div class="empty-state">No visits match your search. Schedule a visit to get started.</div>'}</section>
+      <div class="privacy-note">${icons.warning}<span>Schedule changes are only held in this page session; they are not saved to a shared database.</span></div>`;
+  }
+
+  function renderDashboard() {
+    const views = { 'Overview': renderOverview, 'Patients': renderPatients, 'Caregivers': renderCaregivers, 'Schedule': renderSchedule };
+    appRoot.innerHTML = `<div class="dashboard-shell"><aside class="sidebar">${brandMarkup()}<div class="sidebar-section-label">Workspace</div><nav aria-label="Demo modules">${navItem('Overview', icons.home, 'Overview')}${navItem('Patients', icons.users, 'Patients')}${navItem('Caregivers', icons.caregiver, 'Caregivers')}${navItem('Schedule', icons.calendar, 'Schedule')}</nav><div class="sidebar-bottom"><div class="help-card"><strong>Exploring CareNest?</strong><p>This interactive demo uses temporary sample data.</p><button data-action="back-home">← Back to website</button></div><div class="profile"><div class="profile-avatar">AD</div><div><strong>Alex Morgan</strong><span>Agency administrator · Demo</span></div></div></div></aside><div class="dash-main"><header class="dash-topbar"><div class="breadcrumbs">CareNest <span style="padding:0 7px;color:#A0B3AA">/</span> <strong>${esc(activePage)}</strong></div><div class="topbar-actions"><span class="demo-chip"><span></span> DEMO MODE</span><button class="icon-btn" aria-label="Demo notifications" data-action="notify">${icons.bell}</button><button class="icon-btn" aria-label="Back to landing page" data-action="back-home">${icons.arrow}</button></div></header><main class="dash-content">${(views[activePage] || renderOverview)()}</main></div></div>${modalType ? renderModal() : ''}`;
+  }
+
+  function renderModal() {
+    let title = '', subtitle = '', fields = '';
+    if (modalType === 'patient') {
+      title = 'Add patient'; subtitle = 'Create a sample patient profile in this browser session.';
+      fields = `<div class="form-grid"><div class="form-field"><label for="firstName">First name *</label><input id="firstName" name="firstName" required maxlength="45" placeholder="e.g. Jamie"></div><div class="form-field"><label for="lastName">Last name *</label><input id="lastName" name="lastName" required maxlength="45" placeholder="e.g. Wilson"></div><div class="form-field"><label for="age">Age</label><input id="age" name="age" type="number" min="0" max="120" placeholder="e.g. 74"></div><div class="form-field"><label for="city">Area</label><input id="city" name="city" maxlength="50" placeholder="e.g. North Park"></div><div class="form-field full"><label for="care">Primary care need *</label><select id="care" name="care" required><option value="">Select a care need</option><option>Personal care</option><option>Companion care</option><option>Medication reminders</option><option>Mobility support</option><option>Post-surgery support</option><option>Respite care</option></select></div></div>`;
+    } else if (modalType === 'caregiver') {
+      title = 'Add caregiver'; subtitle = 'Add a sample care team member to this session.';
+      fields = `<div class="form-grid"><div class="form-field"><label for="firstName">First name *</label><input id="firstName" name="firstName" required maxlength="45" placeholder="e.g. Taylor"></div><div class="form-field"><label for="lastName">Last name *</label><input id="lastName" name="lastName" required maxlength="45" placeholder="e.g. Reed"></div><div class="form-field full"><label for="role">Role *</label><select id="role" name="role" required><option value="">Select a role</option><option>Home health aide</option><option>Certified nursing assistant</option><option>Licensed practical nurse</option><option>Registered nurse</option><option>Companion care</option></select></div><div class="form-field full"><label for="phone">Phone (sample only)</label><input id="phone" name="phone" maxlength="30" placeholder="(555) 010-1200"></div></div>`;
+    } else {
+      title = 'Schedule a visit'; subtitle = 'Create a sample visit and assign a patient and caregiver.';
+      fields = `<div class="form-grid"><div class="form-field full"><label for="patientId">Patient *</label><select id="patientId" name="patientId" required><option value="">Select a patient</option>${data.patients.map(p => `<option value="${esc(p.id)}">${esc(p.name)} · ${esc(p.id)}</option>`).join('')}</select></div><div class="form-field full"><label for="caregiverId">Caregiver *</label><select id="caregiverId" name="caregiverId" required><option value="">Select a caregiver</option>${data.caregivers.map(c => `<option value="${esc(c.id)}">${esc(c.name)} · ${esc(c.role)}</option>`).join('')}</select></div><div class="form-field"><label for="visitDate">Visit date *</label><input id="visitDate" name="visitDate" type="date" min="${todayISO()}" value="${todayISO()}" required></div><div class="form-field"><label for="visitTime">Start time *</label><input id="visitTime" name="visitTime" type="time" value="15:00" required></div><div class="form-field"><label for="duration">Duration</label><select id="duration" name="duration"><option>30 min</option><option selected>60 min</option><option>90 min</option><option>120 min</option></select></div><div class="form-field"><label for="visitStatus">Status</label><select id="visitStatus" name="visitStatus"><option>Confirmed</option><option>Pending</option></select></div><div class="form-field full"><label for="service">Service *</label><select id="service" name="service" required><option>Personal care</option><option>Companion visit</option><option>Medication reminder</option><option>Recovery support</option><option>Mobility support</option><option>Respite care</option></select></div></div>`;
+    }
+    return `<div class="modal-backdrop" data-action="dismiss-modal"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-head"><div><h2 id="modalTitle">${title}</h2><p>${subtitle}</p></div><button class="icon-btn" aria-label="Close dialog" data-action="close-modal">${icons.x}</button></div><div class="modal-body"><form id="recordForm" data-type="${modalType}">${fields}<div class="modal-actions"><button type="button" class="btn btn-outline btn-sm" data-action="close-modal">Cancel</button><button type="submit" class="btn btn-sm">${icons.check} Save ${modalType === 'visit' ? 'visit' : modalType}</button></div></form></div></section></div>`;
+  }
+
+  function launchDemo() {
+    modalType = null;
+    activePage = 'Overview'; searchTerm = ''; statusFilter = 'All statuses';
+    if (location.hash !== '#demo') location.hash = 'demo';
+    renderDashboard();
+    window.scrollTo(0,0);
+  }
+  function backHome() {
+    modalType = null;
+    if (location.hash !== '#home') location.hash = 'home';
+    renderLanding();
+    window.scrollTo(0,0);
+  }
+  function showToast(message) {
+    document.querySelector('.toast')?.remove();
+    const toast = document.createElement('div'); toast.className = 'toast'; toast.textContent = message; document.body.appendChild(toast);
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.remove(), 3000);
+  }
+  function openModal(type) {
+    if (type === 'visit' && (!data.patients.length || !data.caregivers.length)) {
+      showToast('Add at least one patient and caregiver before scheduling a visit.'); return;
+    }
+    modalType = type; renderDashboard();
+    setTimeout(() => document.querySelector('#recordForm input, #recordForm select')?.focus(), 50);
+  }
+  function saveRecord(form) {
+    const fd = new FormData(form);
+    if (modalType === 'patient') {
+      const name = `${fd.get('firstName').trim()} ${fd.get('lastName').trim()}`;
+      const nextNumber = Math.max(1041, ...data.patients.map(p => Number(p.id.replace(/\D/g,'')) || 0)) + 1;
+      data.patients.unshift({ id: `PT-${nextNumber}`, name, age: Number(fd.get('age')) || 0, care: fd.get('care'), status: 'Active', city: String(fd.get('city') || '').trim() || 'Not specified' });
+      activePage = 'Patients'; searchTerm = ''; statusFilter = 'All statuses'; modalType = null; renderDashboard(); showToast(`${name} added to the demo patient directory.`);
+    } else if (modalType === 'caregiver') {
+      const name = `${fd.get('firstName').trim()} ${fd.get('lastName').trim()}`;
+      const nextNumber = Math.max(200, ...data.caregivers.map(c => Number(c.id.replace(/\D/g,'')) || 0)) + 1;
+      data.caregivers.unshift({ id: `CG-${nextNumber}`, name, role: fd.get('role'), status: 'Available', phone: String(fd.get('phone') || '').trim() || 'Not provided' });
+      activePage = 'Caregivers'; searchTerm = ''; statusFilter = 'All statuses'; modalType = null; renderDashboard(); showToast(`${name} added to the demo caregiver directory.`);
+    } else if (modalType === 'visit') {
+      const nextNumber = Math.max(500, ...data.visits.map(v => Number(v.id.replace(/\D/g,'')) || 0)) + 1;
+      data.visits.push({ id: `VS-${nextNumber}`, patientId: fd.get('patientId'), caregiverId: fd.get('caregiverId'), date: fd.get('visitDate'), time: fd.get('visitTime'), duration: fd.get('duration'), service: fd.get('service'), status: fd.get('visitStatus') });
+      activePage = 'Schedule'; searchTerm = ''; statusFilter = 'All statuses'; modalType = null; renderDashboard(); showToast('Visit added to the demo schedule.');
+    }
+  }
+
+  appRoot.addEventListener('click', (event) => {
+    const actionEl = event.target.closest('[data-action]');
+    if (!actionEl) return;
+    const action = actionEl.dataset.action;
+    if (action === 'launch-demo') launchDemo();
+    else if (action === 'back-home') backHome();
+    else if (action === 'navigate') { activePage = actionEl.dataset.page; searchTerm = ''; statusFilter = 'All statuses'; modalType = null; renderDashboard(); }
+    else if (action === 'open-modal') openModal(actionEl.dataset.type);
+    else if (action === 'close-modal') { modalType = null; renderDashboard(); }
+    else if (action === 'dismiss-modal' && event.target === actionEl) { modalType = null; renderDashboard(); }
+    else if (action === 'notify') showToast('You are all caught up in this demo.');
+    else if (action === 'mobile-menu') showToast('Use Launch demo to open the interactive workspace.');
+    else if (action === 'patient-details') { const p = getPatient(actionEl.dataset.id); if (p) showToast(`${p.name} · ${p.care} · ${p.status}`); }
+    else if (action === 'caregiver-details') { const c = getCaregiver(actionEl.dataset.id); if (c) showToast(`${c.name} · ${c.role} · ${c.status}`); }
+  });
+  appRoot.addEventListener('submit', (event) => {
+    if (event.target.id !== 'recordForm') return;
+    event.preventDefault();
+    if (!event.target.reportValidity()) return;
+    saveRecord(event.target);
+  });
+  appRoot.addEventListener('input', (event) => {
+    if (event.target.id === 'tableSearch') {
+      searchTerm = event.target.value;
+      const target = event.target;
+      const position = target.selectionStart;
+      renderDashboard();
+      const newInput = document.getElementById('tableSearch');
+      if (newInput) { newInput.focus(); newInput.setSelectionRange(position, position); }
+    }
+  });
+  appRoot.addEventListener('change', (event) => {
+    if (event.target.id === 'statusFilter') { statusFilter = event.target.value; renderDashboard(); }
+  });
+  window.addEventListener('hashchange', () => {
+    if (location.hash === '#demo') renderDashboard();
+    else renderLanding();
+  });
+  if (location.hash === '#demo') renderDashboard(); else renderLanding();
+</script>
+</body>
+</html>
